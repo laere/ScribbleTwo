@@ -13,6 +13,7 @@ const blogPostSchema = {
   image: { type: String, required: true },
   content: { type: String, required: true },
   comments: [{ type: Schema.Types.ObjectId, ref: "comments" }],
+  likes: [{ type: Schema.Types.ObjectId, ref: "users" }],
   datecreated: { type: Date, default: Date.now }
 };
 

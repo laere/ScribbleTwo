@@ -6,10 +6,10 @@ const commentSchema = {
     type: Schema.Types.ObjectId,
     ref: "users"
   },
-  content: {},
-  liked: [],
-  disliked: [],
-  datecreated: {}
+  content: { type: String, required: true },
+  likes: [{ type: Schema.Types.ObjectId, ref: "users" }],
+  dislikes: [{ type: Schema.Types.ObjectId, ref: "users" }],
+  datecreated: { type: Date, default: Date.now }
 };
 
 const Comment = mongoose.model("comments", commentSchema);
