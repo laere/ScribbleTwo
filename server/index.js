@@ -1,22 +1,37 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cookieSession = require("cookie-session");
 const passport = require("passport");
 const bodyParser = require("body-parser");
 const keys = require("./config/keys");
 
+const users = require("./routes/userRoutes");
+
 const app = express();
+
+mongoose.connect(
+  keys.mongoURI,
+  { useNewUrlParser: true },
+  () => console.log("MongoDB connected")
+);
 
 app.use(bodyParser.json());
 app.use(
-  cookieSession({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    keys: [keys.cookieKey]
+  bodyParser.urlencoded({
+    extended: true
   })
 );
 
+// app.use(
+//   cookieSession({
+//     maxAge: 30 * 24 * 60 * 60 * 1000,
+//     keys: [keys.cookieKey]
+//   })
+// );
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use("/api/users", users);
 
 // Only ran inside production (in heroku)
 if (process.env.NODE_ENV === "production") {
@@ -31,5 +46,5 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT);
