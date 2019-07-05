@@ -10,7 +10,7 @@ const blogPostSchema = {
     type: String,
     required: true
   },
-  image: { type: String, required: true },
+  image: { type: String },
   content: { type: String, required: true },
   comments: [{ type: Schema.Types.ObjectId, ref: "comments" }],
   likes: [{ type: Schema.Types.ObjectId, ref: "users" }],

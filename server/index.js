@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const bodyParser = require("body-parser");
 const keys = require("./config/keys");
+const passportAuth = passport.authenticate("jwt", { session: false });
 
 const users = require("./routes/userRoutes");
+const blogPosts = require("./routes/blogpostRoutes");
 
 const app = express();
 
@@ -29,10 +31,12 @@ app.use(
 // );
 
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
+
+require("./services/passport")(passport);
 
 app.use("/api/users", users);
-
+app.use("/api/blogposts", passportAuth, blogPosts);
 // Only ran inside production (in heroku)
 if (process.env.NODE_ENV === "production") {
   // Express will server up prod assets
