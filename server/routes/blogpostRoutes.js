@@ -11,6 +11,18 @@ const myAsync = require("../middleware/async");
 const passport = require("passport");
 
 router.get(
+  "/",
+  myAsync(async (req, res, next) => {
+    let blogPosts = await BlogPost.find({}).populate("user", [
+      "username",
+      "avatar"
+    ]);
+
+    res.send(blogPosts);
+  })
+);
+
+router.get(
   "/:blogPostId",
   myAsync(async (req, res, next) => {
     let blogPost = await BlogPost.findById(req.params.blogPostId);
@@ -26,11 +38,37 @@ router.post(
   myAsync(async (req, res, next) => {
     console.log(req.body);
 
-    let newBlogPost = new BlogPost({ ...req.body });
+    let newBlogPost = new BlogPost({ user: req.user.id, ...req.body });
 
     await newBlogPost.save();
 
     res.send(newBlogPost);
+  })
+);
+
+router.delete(
+  "/:blogPostId",
+  myAsync(async (req, res, next) => {
+    let blogPost = await BlogPost.findOneAndRemove({
+      _id: req.params.blogPostId
+    });
+
+    res.send(blogPost);
+  })
+);
+
+router.put(
+  "/:blogPostId",
+  myAsync(async (req, res, next) => {
+    let blogPost = await BlogPost.findOneAndUpdate(
+      { _id: req.params.blogPostId },
+      { $set: req.body },
+      { new: true }
+    );
+
+    await blogPost.save();
+
+    res.send(blogPost);
   })
 );
 
