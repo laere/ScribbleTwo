@@ -7,6 +7,7 @@ const passportAuth = passport.authenticate("jwt", { session: false });
 
 const users = require("./routes/userRoutes");
 const blogPosts = require("./routes/blogpostRoutes");
+const comments = require("./routes/commentRoutes");
 
 const app = express();
 
@@ -37,6 +38,7 @@ require("./services/passport")(passport);
 
 app.use("/api/users", users);
 app.use("/api/blogposts", passportAuth, blogPosts);
+app.use("/api/blogposts", passportAuth, comments);
 // Only ran inside production (in heroku)
 if (process.env.NODE_ENV === "production") {
   // Express will server up prod assets
