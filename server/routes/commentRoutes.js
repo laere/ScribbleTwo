@@ -32,8 +32,40 @@ router.post(
   })
 );
 
-router.delete("/:blogPostId/:commentId", myAsync(async (req, res, next) => {}));
+router.delete(
+  "/:blogPostId/:commentId",
+  myAsync(async (req, res, next) => {
+    let blogPost = await BlogPost.findById(req.params.blogPostId);
 
-router.put("/:blogPostId/:commentId", myAsync(async (req, res, next) => {}));
+    let removedComment = blogPost.comments.id(req.params.commentId);
+
+    console.log(blogPost.comments);
+
+    removedComment.remove();
+
+    await blogPost.save();
+
+    res.send(blogPost);
+  })
+);
+
+router.put(
+  "/:blogPostId/:commentId",
+  myAsync(async (req, res, next) => {
+    let blogPost = await BlogPost.findById(req.params.blogPostId);
+
+    let newComment = { ...req.body };
+
+    let comment = blogPost.comments.id(req.params.commentId);
+
+    console.log(comment);
+
+    comment.set(newComment);
+
+    await blogPost.save();
+
+    res.send(blogPost);
+  })
+);
 
 module.exports = router;
