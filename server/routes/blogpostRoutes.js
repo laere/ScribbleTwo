@@ -72,4 +72,50 @@ router.put(
   })
 );
 
+router.post(
+  "/like/:blogPostId",
+  myAsync(async (req, res, next) => {
+    let blogPost = await BlogPost.findById(req.params.blogPostId);
+
+    let userAlreadyLiked =
+      blogPost.likes.filter(like => like.user.toString() === req.user.id)
+        .length > 0;
+
+    if (userAlreadyLiked) {
+      res.send("User already liked this post.");
+    }
+
+    blogPost.likes.unshift({ user: req.user.id });
+
+    await blogPost.save();
+
+    res.send(blogPost);
+  })
+);
+
+router.put(
+  "/dislike/:blogPostId",
+  myAsync(async (req, res, next) => {
+    console.log(typeof req.user.id);
+    // let blogPost = await BlogPost.findOneAndUpdate(
+    //   { _id: req.params.blogPostId },
+    //   { $pull: { likes: { _id: "5d25b4263d98153cc4c89f1c" } } },
+    //   { new: true }
+    // );
+
+    let blogPost = await BlogPost.findById(req.params.blogPostId);
+    console.log(blogPost);
+    let liked = blogPost.likes.find(
+      like => like.user.toString() === req.user.id
+    );
+
+    console.log(liked);
+
+    // Have liked ID now update model instance removing the liked id.
+
+    // console.log(blogPost);
+    res.send(blogPost);
+  })
+);
+
 module.exports = router;

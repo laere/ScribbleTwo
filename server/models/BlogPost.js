@@ -24,7 +24,7 @@ const blogPostSchema = {
   image: { type: String },
   content: { type: String, required: true },
   comments: [commentSchema],
-  likes: [{ type: Schema.Types.ObjectId, ref: "users" }],
+  likes: [{ user: { type: Schema.Types.ObjectId, ref: "users" } }],
   datecreated: { type: Date, default: Date.now }
 };
 
